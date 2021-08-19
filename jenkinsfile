@@ -7,11 +7,26 @@ pipeline {
     }
 
     stages {
-		stage('Test') {
-			steps {
+		stage ('Test'){
+			steps{
 				input 'Do you want to proceed?'
 			}
 		}
+	stage ('pre-build'){
+			parallel{
+				stage ('unittest'){
+					steps{
+						echo 'I am in Unit Testing Phase....'
+					}
+				}	
+				stage ('integrationtest'){
+					steps{
+						echo 'I am in Integration Testing Phase....'
+					}
+				}	
+			}
+		}
+	
         stage('Build') {
             steps {
                 // Get some code from a GitHub repository
@@ -29,7 +44,7 @@ pipeline {
                 // failed, record the test results and archive the jar file.
                 success {
                     junit '**/target/surefire-reports/TEST-*.xml'
-                    archiveArtifacts 'target/*.jar'
+                    archiveArtifacts 'Day1-BankApp/target/*.jar'
                 }
             }
         }
